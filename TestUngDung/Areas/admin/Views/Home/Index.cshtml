@@ -1,0 +1,126 @@
+﻿@model PagedList.IPagedList<ModelEF.Models.tblUserAccount>
+@using PagedList.Mvc;
+@using ModelEF.Models;
+
+@{
+    ViewBag.Title = "Danh sách Tài khoản";
+    Layout = "~/Areas/admin/Views/Shared/_Layout.cshtml";
+    IEnumerable<tblDanhMuc> listDM = ViewBag.listDM;
+}
+@section Menu {
+    <ul class="menu">
+        <li class="sidebar-item active">
+            <a href=@Url.Action("Index", "Home") class='sidebar-link'>
+                <i class="bi bi-grid-fill"></i>
+                <span>Danh sách tài khoản</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item has-sub">
+            <a href="#" class='sidebar-link'>
+                <i class="bi bi-stack"></i>
+                <span>Sản phẩm</span>
+            </a>
+            <ul class="submenu" style="display: none;">
+                <li class="submenu-item">
+                    @Html.ActionLink("Tất cả", "Index", "SanPham")
+                </li>
+                @foreach (var item in listDM)
+                {
+                <li class="submenu-item ">
+                    @Html.ActionLink(item.tenDM ,"Index", "SanPham", new { @searchStr = item.idDM }, new { })
+                </li>
+                }
+            </ul>
+        </li>
+
+    </ul>
+}
+@section header{
+    <div class="card-header">
+        <h3>Danh sách tài khoản</h3>
+    </div>
+}
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+            {
+                <div class="row">
+                    <div class="col-md-10">
+                        <input class="form-control" type="text" required value=@ViewBag.searchStr name="searchStr" placeholder="vd. A000001, thiendang,..." />
+                    </div>
+                    <div class="col-md-2" style="float: right">
+                        <input type="submit" value="Tìm kiếm" class="btn btn-light" />
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+<div class="card-body table-responsive">
+    <table class="table table-striped mb-0" style="text-align: center">
+        <thead>
+            <tr>
+                <th>
+                    STT
+                </th>
+                <th>
+                    ID Tài khoản
+                </th>
+                <th>
+                    Tài khoản
+                </th>
+                <th>
+                    Mật khẩu
+                </th>
+                <th>
+                    Trạng thái
+                </th>
+                <th>
+                    Thao tác
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @{ var i = 1;}
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @i
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.idUser)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.userName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.password)
+                    </td>
+                    <td>
+                        @if (item.status.Equals("1"))
+                        {
+                            <span style="color: limegreen">Active</span>
+                        }
+                        else
+                        {
+                            <span style="color: red">Blocked</span>
+                        }
+                    </td>
+                    <td>
+                        <a href=@Url.Action("Delete", new {@id = item.idUser }) onclick="return confirm('Bạn có chắc chắn xóa không ?')">
+                            Xóa
+                        </a>
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+
+</div>

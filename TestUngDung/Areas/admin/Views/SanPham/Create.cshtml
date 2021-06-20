@@ -1,0 +1,91 @@
+﻿@model ModelEF.Models.tblSanPham
+@using ModelEF.Models;
+@{
+    ViewBag.Title = "Danh sách Tài khoản";
+    Layout = "~/Areas/admin/Views/Shared/_Layout.cshtml";
+    IEnumerable<tblDanhMuc> listDM = ViewBag.listDM;
+    SelectList selectLists = new SelectList(listDM, "idDM", "tenDM");
+}
+@section Menu {
+    <ul class="menu">
+        <li class="sidebar-item">
+            <a href=@Url.Action("Index", "Home") class='sidebar-link'>
+                <i class="bi bi-grid-fill"></i>
+                <span>Danh sách tài khoản</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item active has-sub">
+            <a href="#" class='sidebar-link'>
+                <i class="bi bi-stack"></i>
+                <span>Sản phẩm</span>
+            </a>
+            <ul class="submenu" style="display: none;">
+                <li class="submenu-item">
+                    @Html.ActionLink("Tất cả", "Index", "SanPham")
+                </li>
+                @foreach (var item in listDM)
+                {
+                    <li class="submenu-item ">
+                        @Html.ActionLink(item.tenDM, "Index", "SanPham", new { @searchStr = item.idDM }, new { })
+                    </li>
+                }
+            </ul>
+        </li>
+    </ul>
+}
+@section header{
+    <div class="card-header">
+        <h3>Thêm sản phẩm</h3>
+    </div>
+}
+
+<div class="card-content">
+    <div class="card-body">
+        @using (Html.BeginForm(new { @class = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.tenSP, htmlAttributes: new { @for = "first-name-column" })
+                        @Html.TextBoxFor(model => model.tenSP, new { @id = "ten", @class = "form-control", placeholder = "vd. Bánh quy", name = "fname-column" })
+                        @Html.ValidationMessageFor(model => model.tenSP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.soLuong, htmlAttributes: new { @for = "last-name-column" })
+                        @Html.TextBoxFor(model => model.soLuong, new { @id = "soLuong", @class = "form-control", placeholder = "vd. 20", name = "lname-column", type = "number" })
+                        @Html.ValidationMessageFor(model => model.soLuong, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <fieldset class="form-group">
+                        @Html.LabelFor(model => model.DMNo, htmlAttributes: new { @for = "city-column" })
+                        @Html.DropDownListFor(model => model.DMNo, selectLists, new { @id = "city-column", @class = "form-select", @name = "city-column" })
+                        @Html.ValidationMessageFor(model => model.DMNo, "", new { @class = "text-danger" })
+                    </fieldset>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.giaBan, htmlAttributes: new { @for = "country-floating" })
+                        @Html.TextBoxFor(model => model.giaBan, new { @id = "giaBan", @class = "form-control", @placeholder = "vd. 15000", @name = "country-floating", type = "number" })
+                        @Html.ValidationMessageFor(model => model.giaBan, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group col-12">
+                    <div class="form-check">
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary me-1 mb-1">Lưu</button>
+                    <button type="reset" class="btn btn-light-secondary me-1 mb-1">Làm mới</button>
+                </div>
+                <div>
+                    <a href=@Url.Action("Index") style=" top: 78%; position: absolute; z-index: 1;">Quay lại</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
